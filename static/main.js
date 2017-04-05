@@ -218,6 +218,7 @@ window.onload=function(){
                             if(currentImageIndex >= cachedImages.length) {
                                 loandingimg1 = loandingimg2 = false;
                                 document.querySelector('.loading').classList.remove('show');
+                                document.querySelector('.container').classList.add('hide');
                                 document.querySelector('.success-msg').classList.remove('hide');
                                 window.location.reload();
                                 return;
