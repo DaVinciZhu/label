@@ -40,7 +40,7 @@ window.onload=function(){
             loandingimg2 = false;
             showForm();
         }
-        console.log('yyyy');
+        console.log('show next img...');
         console.log(imageURLs);
         var imgURL = imageURLs[ownMap[index]]['image'] ? ['static', 'BoxImags', imageURLs[ownMap[index]]['image'] ].join('/') : '';
 
@@ -193,6 +193,12 @@ window.onload=function(){
         // console.log(cachedImages);
 
         forms = [].slice.call(document.forms);
+        if(cachedImages.length == 0){
+            loandingimg1 = loandingimg2 = false;
+            document.querySelector('.loading').classList.remove('show');
+            document.querySelector('.success-msg').classList.remove('hide');
+            return;
+        }
         forms.forEach(function(form, index) {
             showNextImg(cachedImages[currentImageIndex], forms);
             initformEvent(form);
@@ -208,6 +214,12 @@ window.onload=function(){
                     storageToDB(formdata, function(){
                         if(_ == goNextBtn) {
                             currentImageIndex += 1;
+                            if(currentImageIndex > cachedImages.length()) {
+                                loandingimg1 = loandingimg2 = false;
+                                document.querySelector('.loading').classList.remove('show');
+                                document.querySelector('.success-msg').classList.remove('hide');
+                                return;
+                            }
                         }　else {
                             currentImageIndex -= 1;
                             currentImageIndex = currentImageIndex < 0 ? 0: currentImageIndex;
