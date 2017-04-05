@@ -80,20 +80,22 @@ def get_images():
                     other_id = entry['correspondid']
 
                     other_images.append(entry['correspondid'])
-                data['images'].append(
-                    {
-                        'our': {
-                            'image': our_image,
-                            'word': our_word,
-                            'id': entry['id']
-                        },
-                        'other': {
-                            'image': other_image,
-                            'word': other_word,
-                            'id': other_id
+                # only send to front-end if word is different
+                if str(our_word).strip() != str(other_word).strip():
+                    data['images'].append(
+                        {
+                            'our': {
+                                'image': our_image,
+                                'word': our_word,
+                                'id': entry['id']
+                            },
+                            'other': {
+                                'image': other_image,
+                                'word': other_word,
+                                'id': other_id
+                            }
                         }
-                    }
-                )
+                    )
 
         cur = db.execute('SELECT  id, word, has_labeled from otherResult;')
         entries = cur.fetchall()

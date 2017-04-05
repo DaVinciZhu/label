@@ -1,5 +1,4 @@
 window.onload=function(){
-  hasProcessedImages = []
   cachedImages = []
   currentImageIndex = 0;
   loandingimg1 = true;
@@ -41,7 +40,8 @@ window.onload=function(){
             loandingimg2 = false;
             showForm();
         }
-
+        console.log('yyyy');
+        console.log(imageURLs);
         var imgURL = imageURLs[ownMap[index]]['image'] ? ['static', 'BoxImags', imageURLs[ownMap[index]]['image'] ].join('/') : '';
 
         if(!imgURL) {
@@ -197,26 +197,32 @@ window.onload=function(){
             showNextImg(cachedImages[currentImageIndex], forms);
             initformEvent(form);
         })
-        submitBtn = document.querySelector('#submit');
-        submitBtn.onclick = function(event) {
-            var _ = this;
-            event.preventDefault();
-            validateForm(forms, function(validateSuccess, formdata){
-              if(validateSuccess) {
-                storageToDB(formdata, function(){
-                    hasProcessedImages.push(currentImageIndex);
-                    currentImageIndex += 1;
-                    showNextImg(cachedImages[currentImageIndex], forms);
-                    forms[0].reset();
-                    forms[0].querySelector('.enter-right-word').style.visibility='hidden';
-                    forms[1].reset();
-                    forms[1].querySelector('.enter-right-word').style.visibility='hidden';
-
+        goNextBtn = document.querySelector('#goNext');
+        goLastBtn = document.querySelector('#goLast');
+        [goNextBtn, goLastBtn].forEach(function(submitBtn, index) {
+            submitBtn.onclick = function(event) {
+                var _ = this;
+                event.preventDefault();
+                validateForm(forms, function(validateSuccess, formdata){
+                  if(validateSuccess) {
+                    storageToDB(formdata, function(){
+                        if(_ == goNextBtn) {
+                            currentImageIndex += 1;
+                        }　else {
+                            currentImageIndex -= 1;
+                            currentImageIndex = currentImageIndex < 0 ? 0: currentImageIndex;
+                        }
+                        showNextImg(cachedImages[currentImageIndex], forms);
+                        forms[0].reset();
+                        forms[0].querySelector('.enter-right-word').style.visibility='hidden';
+                        forms[1].reset();
+                        forms[1].querySelector('.enter-right-word').style.visibility='hidden';
+                    });
+                  }
                 });
-              }
-            });
-        };
+            };
 
+        })
         function storageToDB(formdata, func) {
           if(typeof func != 'function') {
             throw new Error('argument must be a function');
@@ -238,6 +244,7 @@ window.onload=function(){
             }
           };
           xhr.open('post', '/storagedb', true);
+          console.log('data for update to db:');
           console.log(formdata);
           // xhr.send(JSON.stringify(formdata));
           // xhr.setRequestHeader("Content-Type", "application/json");
