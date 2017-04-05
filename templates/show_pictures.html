@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="loading show">
+        <h2>
+            Loading img.....
+        </h2>
+    </div>
+    <div class="container fix hide">
+      <div class="left">
+        <form action="#" method="post" class="our-image-form">
+          <h2>Our Way</h2>
+          <div>
+            <label for="img"><img src="" alt="" class="curimg" width="110px" height="55px"></label>
+          </div>
+          <div class="isbox ">
+            <label for="">box is right:</label>
+            <div class="">
+              <input type="radio" name="isrightbox" value="yes" checked="checked"/> YES
+              <input type="radio" name="isrightbox" value="no"/> NO
+            </div>
+            <div class="">
+              <label for="">word is right:</label>
+              <div class="">
+                <input type="radio" name="isrightword" value="yes" checked="checked"/> YES
+                <input type="radio" name="isrightword" value="no"/> NO
+              </div>
+              <div class="enter-right-word" style="visibility:hidden">
+                <label for=""> please enter right word:</label>
+                <div class="right-word">
+                  <input type="text" name="right_word" value=""/>
+                </div>
+              </div>
+              <span style="color:red; font-size: 16px;" class="hide notice">please enter right word!!</span>
+            </div>
+          </div>
+          <div>
+          </div>
+        </form>
+      </div>
+      <div class="right">
+        <form action="#" method="post" class="other-img-form">
+          <h2>Other Way</h2>
+          <div>
+            <label for="img"><img src="" alt="" class="curimg" width="110px" height="55px"></label>
+          </div>
+          <div class="isbox ">
+            <label for="">box is right:</label>
+            <div class="">
+              <input type="radio" name="isrightbox" value="yes"checked="checked"/> YES
+              <input type="radio" name="isrightbox" value="no"/> NO
+            </div>
+            <div class="">
+              <label for="">word is right:</label>
+              <div class="">
+                <input type="radio" name="isrightword" value="yes" checked="checked"/> YES
+                <input type="radio" name="isrightword" value="no"/> NO
+              </div>
+              <div class="enter-right-word" style="visibility:hidden">
+                <label for=""> please enter right word:</label>
+                <div class="right-word">
+                  <input type="text" name="right_word" value=""/>
+                </div>
+              </div>
+              <span style="color:red; font-size: 16px;" class="hide notice">please enter right word!!</span>
+            </div>
+          </div>
+          <div>
+
+          </div>
+        </form>
+      </div>
+      <div class="button-box fix">
+          <button type="submit" name="submit" value="submit" id="submit">submit </button>
+      </div>
+    </div>
+
+
+{% endblock %}
