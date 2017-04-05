@@ -193,6 +193,7 @@ window.onload=function(){
         // console.log(cachedImages);
 
         forms = [].slice.call(document.forms);
+        // if length is 0 , All the pictures have been processed
         if(cachedImages.length == 0){
             loandingimg1 = loandingimg2 = false;
             document.querySelector('.loading').classList.remove('show');
@@ -209,6 +210,7 @@ window.onload=function(){
             submitBtn.onclick = function(event) {
                 var _ = this;
                 event.preventDefault();
+                // validateForm validate forms and the argument is a callback will be called if validate success
                 validateForm(forms, function(validateSuccess, formdata){
                   if(validateSuccess) {
                     storageToDB(formdata, function(){
