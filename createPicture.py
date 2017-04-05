@@ -100,43 +100,72 @@ def draw_box(words,modle,box,imgfile):
     img = cv2.imread(path_ + imgfile +'.jpg')
     max_w = 0
     max_h = 0
-    for word in words:
-        box_list = [int(x) for x in word[box].split(',')]
-        if box == 'boundingBox':
-            cv2.rectangle(img,(box_list[0],box_list[1]),(box_list[0] + box_list[2],box_list[1] + box_list[3]),color)
-            if max_w < box_list[2]:
-                max_w = box_list[2]
-            if max_h < box_list[3]:
-                max_h = box_list[3]
-        else:
-            cv2.rectangle(img,(box_list[0],box_list[1]),(box_list[2],box_list[3]),color)
-            if max_w < box_list[2] - box_list[0]:
-                max_w = box_list[2] - box_list[0]
-            if max_h < box_list[3] - box_list[1]:
-                max_h = box_list[3]- box_list[1]
-        # roi = img[box_list[1] : box_list[1] + box_list[3],box_list[0] : box_list[0] + box_list[2]]
     i = 0
     for word in words:
         box_list = [int(x) for x in word[box].split(',')]
-        # roi = img[box_list[1] : box_list[1] + box_list[3] ,box_list[0] : box_list[0] + box_list[2]]
+        temp = img.copy()
         if box == 'boundingBox':
+            cv2.rectangle(temp,(box_list[0],box_list[1]),(box_list[0] + box_list[2],box_list[1] + box_list[3]),color)
             lx = box_list[0]
             ly = box_list[1]
             rx = box_list[0] + box_list[2]
             ry = box_list[1] + box_list[3]
+            max_w = box_list[2]
+            max_h = box_list[3]
+            # if max_w < box_list[2]:
+            #     max_w = box_list[2]
+            # if max_h < box_list[3]:
+            #     max_h = box_list[3]
         else:
+            cv2.rectangle(temp,(box_list[0],box_list[1]),(box_list[2],box_list[3]),color)
             lx = box_list[0]
             ly = box_list[1]
             rx = box_list[2]
             ry = box_list[3]
+            max_h = ry - ly
+            max_w = rx - lx
         y0 = ly - max_h / 2 if (ly - max_h / 2 > 0) else 0
-        y1 = ry + max_h / 2 if (ry + max_h / 2 < img.shape[1]) else img.shape[1]
-        x0 = lx - max_w / 2 if (lx - max_w / 2 > 0) else 0
-        x1 = rx + max_w / 2 if (rx + max_w / 2 < img.shape[0]) else img.shape[0]
-        roi = img[y0:y1,x0:x1]
-        cv2.imwrite(path_after + modle + '_' + imgfile + '_' + str(i) + '.jpg',roi,[int(cv2.IMWRITE_JPEG_QUALITY),100])
-        # print path_after + imgfile + '_' + str(i) + '.jpg'
-        i = i + 1
+        y1 = ry + max_h / 2 if (ry + max_h / 2 < img.shape[0]) else img.shape[0]
+        x0 = lx - max_w / 2 if (lx - max_w / 2 > 0 ) else 0
+        x1 = rx + max_w / 2 if (rx + max_w / 2 < img.shape[1]) else img.shape[1]
+        roi = temp[y0:y1,x0:x1]
+        cv2.imwrite(path_after + modle + '_' + imgfile + '_' + str(i) + '.jpg',roi)
+        i += 1
+            # if max_w < box_list[2] - box_list[0]:
+            #     max_w = box_list[2] - box_list[0]
+            # if max_h < box_list[3] - box_list[1]:
+            #     max_h = box_list[3]- box_list[1]
+        # roi = img[box_list[1] : box_list[1] + box_list[3],box_list[0] : box_list[0] + box_list[2]]
+    # i = 0
+    # for word in words:
+    #     box_list = [int(x) for x in word[box].split(',')]
+    #     # roi = img[box_list[1] : box_list[1] + box_list[3] ,box_list[0] : box_list[0] + box_list[2]]
+    #     if box == 'boundingBox':
+    #         lx = box_list[0]
+    #         ly = box_list[1]
+    #         rx = box_list[0] + box_list[2]
+    #         ry = box_list[1] + box_list[3]
+    #     else:
+    #         lx = box_list[0]
+    #         ly = box_list[1]
+    #         rx = box_list[2]
+    #         ry = box_list[3]
+    #     y0 = ly - max_h / 2 if (ly - max_h / 2 > 0) else 0
+    #     y1 = ry + max_h / 2 if (ry + max_h / 2 < img.shape[0]) else img.shape[0]
+    #     x0 = lx - max_w / 2 if (lx - max_w / 2 > 0 ) else 0
+    #     x1 = rx + max_w / 2 if (rx + max_w / 2 < img.shape[1]) else img.shape[1]
+    #     roi = img[y0:y1,x0:x1]
+    #     cv2.imwrite(path_after + modle + '_' + imgfile + '_' + str(i) + '.jpg',roi)#,[int(cv2.IMWRITE_JPEG_QUALITY),100])
+    #     # if i == 9 and box == 'boundingBox':
+    #     #     print y0
+    #     #     print y1
+    #     #     print lx, max_w ,x0
+    #     #     print rx, max_w ,img.shape[0], x1
+    #     #     cv2.namedWindow('img')
+    #     #     cv2.imshow('img',roi)
+    #     #     cv2.waitKey(0)
+    #     # print path_after + imgfile + '_' + str(i) + '.jpg'
+    #     i = i + 1
 
 path_ = os.path.join(os.getcwd(),'OriImgs/')
 path_after = os.path.join(os.getcwd(),'static/')
