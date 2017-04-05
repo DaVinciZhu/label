@@ -89,6 +89,9 @@ def caculteCorrespondid(img):
                 our_id = img + '_' + str(indexi)
                 other_id = img + '_' + str(indexj)
                 db.execute('UPDATE ourResult set correspondid = ? where id = ?', [other_id, our_id])
+                if ourword['word'] == otherword['text']:
+                    db.execute("UPDATE ourResult set box_flag = 'true',word_flag = 'true' where id = ?",[our_id])
+                    db.execute("UPDATE otherResult set box_flag = 'true',word_flag = 'true' where id = ?",[other_id])
                 break
             else:
                 indexj += 1
@@ -126,8 +129,8 @@ def draw_box(words,modle,box,imgfile):
             max_w = rx - lx
         y0 = ly - max_h / 2 if (ly - max_h / 2 > 0) else 0
         y1 = ry + max_h / 2 if (ry + max_h / 2 < img.shape[0]) else img.shape[0]
-        x0 = lx - max_w / 2 if (lx - max_w / 2 > 0 ) else 0
-        x1 = rx + max_w / 2 if (rx + max_w / 2 < img.shape[1]) else img.shape[1]
+        x0 = lx - max_w  if (lx - max_w  > 0 ) else 0
+        x1 = rx + max_w  if (rx + max_w  < img.shape[1]) else img.shape[1]
         roi = temp[y0:y1,x0:x1]
         cv2.imwrite(path_after + modle + '_' + imgfile + '_' + str(i) + '.jpg',roi)
         i += 1
