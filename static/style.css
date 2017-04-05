@@ -72,6 +72,7 @@ label + div {
 }
 #goLast {
     background-color: #a7cbea;
+    margin-right: 20px;
 }
 .loading {
   display: none;
@@ -82,7 +83,15 @@ label + div {
 .hide {
   display: none;
 }
-
+.img-box {
+    min-height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.img-box .img-cell{
+    flex:1;
+}
 .raw-word-box {
     font-size: 1.4em;
 }
@@ -91,4 +100,7 @@ label + div {
     display: inline-block;
     border-bottom: 2px solid #000;
     margin-bottom: 12px;
+}
+.success-msg {
+    font-size: 2em;
 }

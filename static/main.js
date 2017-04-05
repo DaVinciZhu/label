@@ -214,10 +214,12 @@ window.onload=function(){
                     storageToDB(formdata, function(){
                         if(_ == goNextBtn) {
                             currentImageIndex += 1;
-                            if(currentImageIndex > cachedImages.length) {
+                            console.log('currImgIndex: ' + currentImageIndex + 'cachedImagesLength: ' + cachedImages.length);
+                            if(currentImageIndex >= cachedImages.length) {
                                 loandingimg1 = loandingimg2 = false;
                                 document.querySelector('.loading').classList.remove('show');
                                 document.querySelector('.success-msg').classList.remove('hide');
+                                window.location.reload();
                                 return;
                             }
                         }　else {
