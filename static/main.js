@@ -17,32 +17,50 @@ window.onload=function(){
     }
     return radiosDom;
   }
+  function showForm(){
+      if(!loandingimg1 && !loandingimg2) {
+        document.querySelector('.loading').classList.remove('show');
+        document.querySelector('.container').classList.remove('hide');
+      }
+  }
   function showNextImg(imageURLs, forms) {
       forms.forEach(function(form, index) {
         curimg = form.querySelector('.curimg');
+        console.log(curimg);
         wordspan = form.querySelector('.word');
         curimg.onload = (function(index){
           if(!loandingimg1 && !loandingimg2) return;
           return function(event) {
             if(index == 0) { loandingimg1 = false;}
             if(index == 1) { loandingimg2 = false; }
-            if(!loandingimg1 && !loandingimg2) {
-              document.querySelector('.loading').classList.remove('show');
-              document.querySelector('.container').classList.remove('hide');
-            }
+            showForm();
           }
         })(index);
+        curimg.onerror=function(e){
+            loandingimg1 = false;
+            loandingimg2 = false;
+            showForm();
+        }
 
         var imgURL = imageURLs[ownMap[index]]['image'] ? ['static', 'BoxImags', imageURLs[ownMap[index]]['image'] ].join('/') : '';
-        
+
         if(!imgURL) {
             form.style.visibility = 'hidden';
+            if(forms[0].visibility == 'hidden' && forms[1].visibility == 'hidden') {
+                loandingimg1 = false;
+                loandingimg2 = false;
+                if(!loandingimg1 && !loandingimg2) {
+                  document.querySelector('.loading').classList.remove('show');
+                  document.querySelector('.container').classList.remove('hide');
+                }
+            }
         }else{
-            curimg.src = ['static', 'BoxImags', imageURLs[ownMap[index]]['image'] ].join('/');
+
+            curimg.src = imgURL;
+            console.log('cur img url '+imgURL);
             wordspan.innerHTML = imageURLs[ownMap[index]]['word'];
             form.style.visibility ='visible';
         }
-        console.log(curimg.src);
       })
   }
   function initformEvent(form) {
@@ -85,11 +103,13 @@ window.onload=function(){
               }
               console.log('change yes : ' + isBox + ' '+isWord);
             }
+            console.log('finally :' + isBox+' '+isWord);
             if(isBox && isWord) {
                 enterRightWordBox.style.visibility="hidden";
                 //hide notice
                 notice.classList.add('hide');
             }else{
+                console.log('show box for enter right word');
                 enterRightWordBox.style.visibility="visible";
             }
           };
@@ -170,7 +190,7 @@ window.onload=function(){
       if(xhr.status >= 200 && xhr.status < 300 || xhr.status == 304 ) {
         data = JSON.parse(xhr.response);
         cachedImages = data['images'];
-        console.log(cachedImages);
+        // console.log(cachedImages);
 
         forms = [].slice.call(document.forms);
         forms.forEach(function(form, index) {
@@ -188,9 +208,9 @@ window.onload=function(){
                     currentImageIndex += 1;
                     showNextImg(cachedImages[currentImageIndex], forms);
                     forms[0].reset();
-                    forms[0].querySelector('.enter-right-word').style.display='none';
+                    forms[0].querySelector('.enter-right-word').style.visibility='hidden';
                     forms[1].reset();
-                    forms[1].querySelector('.enter-right-word').style.display='none';
+                    forms[1].querySelector('.enter-right-word').style.visibility='hidden';
 
                 });
               }
