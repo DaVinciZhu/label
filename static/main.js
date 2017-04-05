@@ -214,7 +214,7 @@ window.onload=function(){
                     storageToDB(formdata, function(){
                         if(_ == goNextBtn) {
                             currentImageIndex += 1;
-                            if(currentImageIndex > cachedImages.length()) {
+                            if(currentImageIndex > cachedImages.length) {
                                 loandingimg1 = loandingimg2 = false;
                                 document.querySelector('.loading').classList.remove('show');
                                 document.querySelector('.success-msg').classList.remove('hide');
