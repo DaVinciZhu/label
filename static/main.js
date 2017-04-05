@@ -5,6 +5,8 @@ window.onload=function(){
   loandingimg1 = true;
   loandingimg2 = true;
 
+  ownMap = [ 'our', 'other' ] //0 is our 1 is other
+
   function getRadios(form) {
     var inputs = form.querySelectorAll('input');
     radiosDom = [];
@@ -18,6 +20,7 @@ window.onload=function(){
   function showNextImg(imageURLs, forms) {
       forms.forEach(function(form, index) {
         curimg = form.querySelector('.curimg');
+        wordspan = form.querySelector('.word');
         curimg.onload = (function(index){
           if(!loandingimg1 && !loandingimg2) return;
           return function(event) {
@@ -29,7 +32,16 @@ window.onload=function(){
             }
           }
         })(index);
-        curimg.src = ['static', 'BoxImags', imageURLs[index]].join('/');
+
+        var imgURL = imageURLs[ownMap[index]]['image'] ? ['static', 'BoxImags', imageURLs[ownMap[index]]['image'] ].join('/') : '';
+        
+        if(!imgURL) {
+            form.style.visibility = 'hidden';
+        }else{
+            curimg.src = ['static', 'BoxImags', imageURLs[ownMap[index]]['image'] ].join('/');
+            wordspan.innerHTML = imageURLs[ownMap[index]]['word'];
+            form.style.visibility ='visible';
+        }
         console.log(curimg.src);
       })
   }
@@ -126,8 +138,7 @@ window.onload=function(){
 
       if((box_flag && word_flag) || right_word.trim() != "") {
         notice.classList.add('hide');
-        var id = cachedImages[currentImageIndex][index].split('.')[0]
-        id = id.split('_')[1] + '_' + id.split('_')[2]
+        var id = cachedImages[currentImageIndex][ownMap[index]]['id']
         data[prefix] = {
           'box_flag': box_flag,
           'word_flag': word_flag,

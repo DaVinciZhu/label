@@ -64,25 +64,58 @@ def get_images():
         #data['images'] = jpgs
         # get all images msg from db
         db = get_db()
-        cur = db.execute('SELECT  id, has_labeled, correspondid from ourResult;')
+        cur = db.execute('SELECT  id, word, has_labeled, correspondid from ourResult;')
         entries = cur.fetchall()
         for entry in entries:
             if not entry['has_labeled']:
                 our_image = 'our_'+entry['id']+'.jpg'
-                other_image = None
+                our_word = entry['word']
+                other_image , other_word, other_id = None, None, None
                 if entry['correspondid']:
                     other_image = 'other_' + entry['correspondid'] + '.jpg'
-                    other_images.append(entry['correspondid'])
-                data['images'].append([our_image, other_image])
 
-        cur = db.execute('SELECT  id, has_labeled from otherResult;')
+                    cur2 = db.execute('SELECT word from otherResult where id = ?', [entry['correspondid']])
+                    other_entry = cur2.fetchall()[0]
+                    other_word = other_entry['word']
+                    other_id = entry['correspondid']
+
+                    other_images.append(entry['correspondid'])
+                data['images'].append(
+                    {
+                        'our': {
+                            'image': our_image,
+                            'word': our_word,
+                            'id': entry['id']
+                        },
+                        'other': {
+                            'image': other_image,
+                            'word': other_word,
+                            'id': other_id
+                        }
+                    }
+                )
+
+        cur = db.execute('SELECT  id, word, has_labeled from otherResult;')
         entries = cur.fetchall()
         for entry in entries:
             if not entry['has_labeled'] and (entry['id'] not in other_images):
-                data['images'].append([None, 'other_'+entry['id']+'.jpg'])
+                data['images'].append(
+                    {
+                        'our':{
+                            'image': None,
+                            'word': None,
+                            'id': None,
+                        },
+                        'other':{
+                            'image': 'other_'+entry['id']+'.jpg',
+                            'word': entry['word'],
+                            'id': entry['id']
+                        }
+                    }
+                )
         # return json.dumps(data)
         return json.dumps(data)
-        
+
 @app.route('/storagedb', methods=['POST'])
 def storage_db():
     print request.data
