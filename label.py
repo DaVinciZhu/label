@@ -84,7 +84,7 @@ def get_images():
 
                     other_images.append(entry['correspondid'])
                 # only send to front-end if word is different
-                if str(our_word).strip() != str(other_word).strip():
+                if str(our_word).strip().lower() != str(other_word).strip().lower():
                     data['images'].append(
                         {
                             'our': {
