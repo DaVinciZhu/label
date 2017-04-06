@@ -75,13 +75,16 @@ label + div {
     margin-top: 12px;
 }
 .button-box > button {
-      width: 34%;
+      width: 12%;
       margin: auto;
 }
 #goLast {
     background-color: #a7cbea;
-    margin-right: 61px;
-    margin-left: 10%;
+    margin-right: 10px;
+    margin-left: 16%;
+}
+#goNext {
+    width: 51%;
 }
 .loading {
   display: none;
