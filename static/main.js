@@ -19,6 +19,13 @@ window.onload=function(){
         }
         return radiosDom;
     }
+    function setPercentBar(percent){
+        var process = document.querySelector('.process-status');
+        var processText = document.querySelector('.process-text');
+
+        process.style.width = '100%';
+        processText.innerText = percent;
+    }
     function resetForm() { //reset form field
         isOurBoxRight    = true;
         isOurWordRight   = true;
@@ -33,8 +40,13 @@ window.onload=function(){
     }
     function showForm(){
         if(!loadingming1 && !loadingming2) {
-            document.querySelector('.loading').classList.remove('show');
-            document.querySelector('.container').classList.remove('hide');
+
+            setPercentBar('100%');
+            setTimeout(function(){
+                document.querySelector('.loading').classList.remove('show');
+                document.querySelector('.container').classList.remove('hide');
+            }, 100);
+
         }
     }
     function isBoxRight(index){
@@ -272,6 +284,23 @@ window.onload=function(){
     }
     xhr = createXHR();
 
+    xhr.onprogress = function(event) {
+        var process = document.querySelector('.process-status');
+        var received = event.position || event.loaded;
+        var total = event.totalSize || event.total;
+        console.log('received ' + received + ' total: ' + total);
+        if(event.lengthComputable) {
+            percent = parseInt(received) / parseInt(total)*100 + '%';
+            setPercentBar(percent);
+        } else {
+            process.parentNode.style.display = 'none';
+        }
+    }
+    xhr.onload = function(event) {
+        var process = document.querySelector('.process-status');
+        var processText = document.querySelector('.process-text');
+        processText.innerText = '100%';
+    }
     xhr.onreadystatechange = function() {
     var formdata;
     if(xhr.readyState == 4) {
