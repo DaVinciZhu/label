@@ -54,21 +54,34 @@ def get_our_json(imgfile):
     OurWords = []
     # print '\nOurs words:'
     fn = imgfile
-    oursf = file(path_ + fn + ".json.ours")
+    oursf = file(path_ + fn + ".jpg.my.json")
+    # print path_ + fn + ".jpg.my.json"
     ours = json.load(oursf)
-    result = json.loads(ours['Result'])
+    # result = json.loads(ours['Result'])
+    # print ours
     index = 0
-    for line in result:
-        for word in line:
-             temp = ''
-             for i in range(0,3):
-                 temp = temp +  str(word['box'][i]) +','
-             temp = temp + str(word['box'][3])
-             word['box'] = temp
-             OurWords.append(word)#print word
-             db.execute('insert OR IGNORE into ourResult (id,img,box_,word) values (?,?, ?, ?)',
-                          [imgfile + '_' + str(index), imgfile ,temp,word['word']])
-             index = index + 1
+
+    for region in ours['regions']:
+        for line in region['lines']:
+            for word in line['words']:
+                OurWords.append(word)#print word
+                # print word
+                # print word['boundingBox'],word['text']
+                db.execute('insert OR IGNORE into ourResult (id,img,box_,word) values (?,?, ?, ?)',
+                             [imgfile + '_' + str(index),imgfile , word['boundingBox'], word['text']])
+                index = index + 1
+    # Old Version
+    # for line in result:
+    #     for word in line:
+    #          temp = ''
+    #          for i in range(0,3):
+    #              temp = temp +  str(word['box'][i]) +','
+    #          temp = temp + str(word['box'][3])
+    #          word['box'] = temp
+    #          OurWords.append(word)#print word
+    #          db.execute('insert OR IGNORE into ourResult (id,img,box_,word) values (?,?, ?, ?)',
+    #                       [imgfile + '_' + str(index), imgfile ,temp,word['word']])
+    #          index = index + 1
     db.commit()
     oursf.close
     return OurWords
@@ -77,8 +90,8 @@ def caculteCorrespondid(img):
     indexi = 0
     for ourword in OurWords:
         indexj = 0
-        our_box_list = [int(x) for x in ourword['box'].split(',')]
-        x1, y1, x2, y2 = our_box_list
+        our_box_list = [int(x) for x in ourword['boundingBox'].split(',')]
+        x1, y1, x2, y2 = our_box_list[0],our_box_list[1],our_box_list[0] + our_box_list[2],our_box_list[1] + our_box_list[3]
         for otherword in OtherWords:
             other_box_list = [int(x) for x in otherword['boundingBox'].split(',')]
             x11, y11, x22, y22 = other_box_list[0], other_box_list[1], other_box_list[0] + other_box_list[2], other_box_list[1] + other_box_list[3]
@@ -89,7 +102,7 @@ def caculteCorrespondid(img):
                 our_id = img + '_' + str(indexi)
                 other_id = img + '_' + str(indexj)
                 db.execute('UPDATE ourResult set correspondid = ? where id = ?', [other_id, our_id])
-                if ourword['word'] == otherword['text']:
+                if ourword['text'] == otherword['text']:
                     db.execute("UPDATE ourResult set box_flag = 'true',word_flag = 'true' where id = ?",[our_id])
                     db.execute("UPDATE otherResult set box_flag = 'true',word_flag = 'true' where id = ?",[other_id])
                 break
@@ -184,8 +197,10 @@ for pic in pics:
     # print pic,"!!"
     OtherWords = get_other_json(pic.split('.')[0])
     OurWords = get_our_json(pic.split('.')[0])
+    # print "Ourwords"
+    # print OurWords
     draw_box(OtherWords,'other','boundingBox',pic.split('.')[0])
-    draw_box(OurWords,'our','box',pic.split('.')[0])
+    draw_box(OurWords,'our','boundingBox',pic.split('.')[0])
     caculteCorrespondid(pic.split('.')[0])
 #>>> Test JSON
 # print OtherWords

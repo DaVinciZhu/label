@@ -1,11 +1,14 @@
 # all the imports
 import os
-import createPicture
+# import createPicture
 #import sqlite3
 from sqlite3 import dbapi2 as sqlite3
 import json
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 # create our little application :)
 app = Flask(__name__)
