@@ -330,12 +330,8 @@ window.onload=function(){
         document.onkeyup = function (event){
             event.preventDefault();
             event.stopPropagation();
-            console.log(event.target);
-            console.log(event.currentTarget);
-            console.log('document !!!!');
             if (parseInt(event.keyCode)==13) {
                 //回车键的键值为13
-                console.log('trigger goNextBtn');
                 goNextBtn.click();
 
                 return false;
