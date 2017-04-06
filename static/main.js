@@ -316,8 +316,8 @@ window.onload=function(){
             document.querySelector('.success-msg').classList.remove('hide');
             return;
         }
+        showNextImg(cachedImages[currentImageIndex], forms);
         forms.forEach(function(form, index) {
-            showNextImg(cachedImages[currentImageIndex], forms);
             initformEvent(form, index);
         })
         var goNextBtn = document.querySelector('#goNext');
