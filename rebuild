@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+echo $(tput setaf 2; tput bold)'update db using scheme.sql'$(tput sgr0)
+
+sqlite3 label.db < schema.sql
+
+echo $(tput setaf 3; tput bold)'init db using createPicture'$(tput sgr0)
+
+python createPicture.py
+
+echo $(tput setaf 2; tput bold)'restart label.py app..'$(tput sgr0)
+
+PID=`netstat -nltp | grep '0.0.0.0:5000' | awk -F' ' '{ print $7}' | cut -d'/' -f1`
+
+while [ -n "${PID}" ]
+do
+    echo $(tput setaf 1; tput bold)"kill old app usind pid "${PID}$(tput sgr0)
+    kill -9 ${PID}
+    PID=`netstat -nltp | grep '0.0.0.0:5000' | awk -F' ' '{ print $7}' | cut -d'/' -f1`
+done
+echo $(tput setaf 1; tput bold)"kill old label app success! "$(tput sgr0)
+
+sleep 1
+
+python label.py&
+
+echo $(tput setaf 2; tput bold)'restart successing..'$(tput sgr0)
+
+exit 0
+
+
