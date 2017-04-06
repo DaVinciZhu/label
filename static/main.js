@@ -6,7 +6,9 @@ window.onload=function(){
 
     var ownMap = [ 'our', 'other' ] //0 is our 1 is other
     var isOurBoxRight = true, isOurWordRight = true, isOtherBoxRight = true, isOtherWordRight = true;
+
     forms = [].slice.call(document.forms);
+
     function getRadios(form) {
         var inputs = form.querySelectorAll('input');
         radiosDom = [];
@@ -160,6 +162,11 @@ window.onload=function(){
         var enterRightWordInput = enterRightWordBox.querySelector('input');
 
         // enterRightWordBox.style.display ='none';
+        enterRightWordInput.onkeydown = function(event) {
+            if(parseInt(event.keyCode) == 13) {
+                return false;
+            }
+        }
         enterRightWordInput.onkeyup = (function(index) {
             var otherEnterRightBox = forms[index == 0 ? 1 : 0].querySelector('.enter-right-word');
             var otherEnterRightInput = otherEnterRightBox.querySelector('input');
@@ -198,8 +205,8 @@ window.onload=function(){
                     }else{
                         console.log('show box for enter right word');
                         //set default value is other form's word if it is right
-                        console.log(isOtherBoxRight + ' other ' + isOtherWordRight);
-                        console.log(isOurBoxRight + ' our ' + isOurWordRight);
+                        // console.log(isOtherBoxRight + ' other ' + isOtherWordRight);
+                        // console.log(isOurBoxRight + ' our ' + isOurWordRight);
                         if((index == 0 && (isOtherWordRight && isOtherBoxRight)) || (index == 1 && (isOurBoxRight && isOurWordRight))) {
                             var otherFormIndex = index == 0 ? 1 : 0;
                             form.elements['right_word'].value = forms[otherFormIndex].querySelector('.word').innerText;
@@ -283,11 +290,13 @@ window.onload=function(){
             showNextImg(cachedImages[currentImageIndex], forms);
             initformEvent(form, index);
         })
-        goNextBtn = document.querySelector('#goNext');
-        goLastBtn = document.querySelector('#goLast');
+        var goNextBtn = document.querySelector('#goNext');
+        var goLastBtn = document.querySelector('#goLast');
         [goNextBtn, goLastBtn].forEach(function(submitBtn, index) {
             submitBtn.onclick = function(event) {
                 var _ = this;
+                console.log(_);
+                console.log('hahahahahah');
                 event.preventDefault();
                 // validateForm validate forms and the argument is a callback will be called if validate success
                 validateForm(forms, function(validateSuccess, formdata){
@@ -317,6 +326,23 @@ window.onload=function(){
             };
 
         })
+        // click enter trigger goNext btn
+        document.onkeyup = function (event){
+            event.preventDefault();
+            event.stopPropagation();
+            console.log(event.target);
+            console.log(event.currentTarget);
+            console.log('document !!!!');
+            if (parseInt(event.keyCode)==13) {
+                //回车键的键值为13
+                console.log('trigger goNextBtn');
+                goNextBtn.click();
+
+                return false;
+            }
+
+
+    　　};
         function storageToDB(formdata, func) {
           if(typeof func != 'function') {
             throw new Error('argument must be a function');
