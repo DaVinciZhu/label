@@ -1,8 +1,8 @@
 window.onload=function(){
   cachedImages = []
   currentImageIndex = 0;
-  loandingimg1 = true;
-  loandingimg2 = true;
+  loadingming1 = true;
+  loadingming2 = true;
 
   ownMap = [ 'our', 'other' ] //0 is our 1 is other
 
@@ -17,7 +17,7 @@ window.onload=function(){
     return radiosDom;
   }
   function showForm(){
-      if(!loandingimg1 && !loandingimg2) {
+      if(!loadingming1 && !loadingming2) {
         document.querySelector('.loading').classList.remove('show');
         document.querySelector('.container').classList.remove('hide');
       }
@@ -28,36 +28,37 @@ window.onload=function(){
         console.log(curimg);
         wordspan = form.querySelector('.word');
         curimg.onload = (function(index){
-          if(!loandingimg1 && !loandingimg2) return;
+          if(!loadingming1 && !loadingming2) return;
           return function(event) {
-            if(index == 0) { loandingimg1 = false;}
-            if(index == 1) { loandingimg2 = false; }
+            if(index == 0) { loadingming1 = false;}
+            if(index == 1) { loadingming2 = false; }
+            console.log('over ' + loadingming1 + ' ' + loadingming2);
             showForm();
           }
         })(index);
         curimg.onerror=function(e){
-            loandingimg1 = false;
-            loandingimg2 = false;
+            loadingming1 = false;
+            loadingming2 = false;
             showForm();
         }
         console.log('show next img...');
-        console.log(imageURLs);
         var imgURL = imageURLs[ownMap[index]]['image'] ? ['static', 'BoxImags', imageURLs[ownMap[index]]['image'] ].join('/') : '';
 
         if(!imgURL) {
+            console.log('the ' + index + ' img is null ');
+            // if img is none then first we hidden form for show it and then set loading variable is false
             form.style.visibility = 'hidden';
-            if(forms[0].visibility == 'hidden' && forms[1].visibility == 'hidden') {
-                loandingimg1 = false;
-                loandingimg2 = false;
-                if(!loandingimg1 && !loandingimg2) {
-                  document.querySelector('.loading').classList.remove('show');
-                  document.querySelector('.container').classList.remove('hide');
-                }
+            
+            if(index == 0) loadingming1 = false;
+            if(index == 1) loadingming2 = false;
+            console.log(loadingming1 + ' ' + loadingming2);
+            if(!loadingming1 && !loadingming2) {
+              document.querySelector('.loading').classList.remove('show');
+              document.querySelector('.container').classList.remove('hide');
             }
         }else{
-
             curimg.src = imgURL;
-            console.log('cur img url '+imgURL);
+            console.log('the ' + index + ' img url is '+imgURL);
             wordspan.innerHTML = imageURLs[ownMap[index]]['word'];
             form.style.visibility ='visible';
         }
@@ -65,7 +66,6 @@ window.onload=function(){
   }
   function initformEvent(form) {
     var notice = form.querySelector('.notice');
-    console.log(form);
     //hide  enterRightWordBox
     enterRightWordBox = form.querySelector('.enter-right-word');
     // enterRightWordBox.style.display ='none';
@@ -195,7 +195,7 @@ window.onload=function(){
         forms = [].slice.call(document.forms);
         // if length is 0 , All the pictures have been processed
         if(cachedImages.length == 0){
-            loandingimg1 = loandingimg2 = false;
+            loadingming1 = loadingming2 = false;
             document.querySelector('.loading').classList.remove('show');
             document.querySelector('.success-msg').classList.remove('hide');
             return;
@@ -218,7 +218,7 @@ window.onload=function(){
                             currentImageIndex += 1;
                             console.log('currImgIndex: ' + currentImageIndex + 'cachedImagesLength: ' + cachedImages.length);
                             if(currentImageIndex >= cachedImages.length) {
-                                loandingimg1 = loandingimg2 = false;
+                                loadingming1 = loadingming2 = false;
                                 document.querySelector('.loading').classList.remove('show');
                                 document.querySelector('.container').classList.add('hide');
                                 document.querySelector('.success-msg').classList.remove('hide');
