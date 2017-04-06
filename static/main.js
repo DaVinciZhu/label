@@ -25,7 +25,6 @@ window.onload=function(){
   function showNextImg(imageURLs, forms) {
       forms.forEach(function(form, index) {
         curimg = form.querySelector('.curimg');
-        console.log(curimg);
         wordspan = form.querySelector('.word');
         curimg.onload = (function(index){
           return function(event) {
@@ -105,22 +104,17 @@ window.onload=function(){
                   isWord = false;
                   break;
               }
-              console.log('change ' + isBox+' '+isWord);
             }
             if(_.checked && _.value == 'yes') {
               switch (_.name) {
                 case 'isrightbox':
                   isBox = true;
-                  console.log('isrightbox');
                   break;
                 case 'isrightword':
                   isWord = true;
-                  console.log('isrightword');
                   break;
               }
-              console.log('change yes : ' + isBox + ' '+isWord);
             }
-            console.log('finally :' + isBox+' '+isWord);
             if(isBox && isWord) {
                 enterRightWordBox.style.visibility="hidden";
                 //hide notice
@@ -233,7 +227,7 @@ window.onload=function(){
                     storageToDB(formdata, function(){
                         if(_ == goNextBtn) {
                             currentImageIndex += 1;
-                            console.log('currImgIndex: ' + currentImageIndex + 'cachedImagesLength: ' + cachedImages.length);
+                            console.log('currImgIndex is: ' + currentImageIndex + 'cachedImagesLength is: ' + cachedImages.length);
                             if(currentImageIndex >= cachedImages.length) {
                                 loadingming1 = loadingming2 = false;
                                 document.querySelector('.loading').classList.remove('show');
