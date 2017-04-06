@@ -28,11 +28,25 @@ window.onload=function(){
         console.log(curimg);
         wordspan = form.querySelector('.word');
         curimg.onload = (function(index){
-          if(!loadingming1 && !loadingming2) return;
           return function(event) {
+            var _ = this;
             if(index == 0) { loadingming1 = false;}
             if(index == 1) { loadingming2 = false; }
-            console.log('over ' + loadingming1 + ' ' + loadingming2);
+
+            //if img width greater than 410px then set it width 410px;
+            var curImgWidth = _.width;
+            var curImgHeight = _.height;
+            console.log(`the ${index} img's raw width is ${curImgWidth}`);
+            if(parseInt(curImgWidth) > 410) {
+                console.log('greater than 410');
+                var radio = curImgWidth / curImgHeight;
+                _.width = 410;
+                _.height = _.width / radio;
+            } else{
+                _.width = curImgWidth;
+                _.height = curImgHeight;
+            }
+            console.log(`the ${index} img's real width in html is ${_.width}`);
             showForm();
           }
         })(index);
@@ -45,10 +59,10 @@ window.onload=function(){
         var imgURL = imageURLs[ownMap[index]]['image'] ? ['static', 'BoxImags', imageURLs[ownMap[index]]['image'] ].join('/') : '';
 
         if(!imgURL) {
-            console.log('the ' + index + ' img is null ');
+            console.log(`the ${index} img is null`);
             // if img is none then first we hidden form for show it and then set loading variable is false
             form.style.visibility = 'hidden';
-            
+
             if(index == 0) loadingming1 = false;
             if(index == 1) loadingming2 = false;
             console.log(loadingming1 + ' ' + loadingming2);
@@ -57,8 +71,11 @@ window.onload=function(){
               document.querySelector('.container').classList.remove('hide');
             }
         }else{
+            curimg.removeAttribute('width');
+            curimg.removeAttribute('height');
+
             curimg.src = imgURL;
-            console.log('the ' + index + ' img url is '+imgURL);
+            console.log(`the ${index} img url is ${imgURL}.`);
             wordspan.innerHTML = imageURLs[ownMap[index]]['word'];
             form.style.visibility ='visible';
         }
