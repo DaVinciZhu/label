@@ -207,8 +207,10 @@ window.onload=function(){
                         if(!((isOurWordRight && isOurBoxRight) || (isOtherWordRight && isOtherBoxRight))) {
                             forms[0].elements['right_word'].value = '';
                             forms[1].elements['right_word'].value = '';
+                            forms[0].elements['right_word'].focus();
                         }
                         enterRightWordBox.style.visibility="visible";
+                        enterRightWordBox.querySelector('input').focus();
                     }
                 };
             })(enterRightWordBox, index);
