@@ -294,6 +294,7 @@ window.onload=function(){
             setPercentBar(percent);
         } else {
             process.parentNode.style.display = 'none';
+            document.querySelector('.process-text').innerText = '';
         }
     }
     xhr.onload = function(event) {
