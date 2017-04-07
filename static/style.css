@@ -119,3 +119,15 @@ label + div {
 .success-msg {
     font-size: 2em;
 }
+
+/* process bar*/
+.process-status-box{
+    width: 100%;
+    height: 2px;
+    background-color:  #AAA;
+}
+.process-status {
+    height: 100%;
+    background-color: #377BA8;
+    width: 0;
+}

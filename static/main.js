@@ -1,14 +1,44 @@
 window.onload=function(){
     var cachedImages = [],
         currentImageIndex = 0,
+
         loadingming1 = true,
         loadingming2 = true;
 
     var ownMap = [ 'our', 'other' ] //0 is our 1 is other
     var isOurBoxRight = true, isOurWordRight = true, isOtherBoxRight = true, isOtherWordRight = true;
+    var forms = [].slice.call(document.forms);
+    var ourEnterWordBox = forms[0].querySelector('.enter-right-word');
+    var otherEnterWordBox = forms[1].querySelector('.enter-right-word');
 
-    forms = [].slice.call(document.forms);
+    var hasAllLabled = false;
 
+    function createXHR() {
+        return new XMLHttpRequest();
+    }
+    window.onbeforeunload = function(){
+        var update_status_xhr = createXHR();
+        update_status_xhr.onreadystatechange = function(){
+            if(update_status_xhr.readyState == 4) {
+                 if(update_status_xhr.status >= 200 && update_status_xhr.status < 300 || update_status_xhr.status == 304 ) {
+                    data = JSON.parse(update_status_xhr.response || update_status_xhr.responseText)
+                    if(data.msg == 'ok') {
+                        console.log('processing status update success')
+                    }else{
+                         if(parseInt(data.code) == 1) {
+                             window.location.reload();
+                         }
+                        console.log(`update processing status error ${data.msg}`)
+                    }
+                 }
+            }
+        }
+        update_status_xhr.onerror = function(){
+            console.log('update processing status error...')
+        }
+        update_status_xhr.open('post', '/updateprostatus', false);
+        update_status_xhr.send(JSON.stringify({ 'images': cachedImages }));
+    }
     function getRadios(form) {
         var inputs = form.querySelectorAll('input');
         radiosDom = [];
@@ -40,11 +70,9 @@ window.onload=function(){
     }
     function showForm(){
         if(!loadingming1 && !loadingming2) {
-
             setPercentBar('100%');
             setTimeout(function(){
-                document.querySelector('.loading').classList.remove('show');
-                document.querySelector('.container').classList.remove('hide');
+                isLoading(false);
             }, 100);
 
         }
@@ -60,6 +88,24 @@ window.onload=function(){
         if(index ==1) return !!isOtherWordRight;
 
         return isOurWordRight && isOtherWordRight;
+    }
+    function isLoading(flag) {
+        if(flag) {
+            loadingming1 = loadingming2 = true;
+            document.querySelector('.loading').classList.add('show');
+            document.querySelector('.container').classList.add('hide');
+        } else{
+            loadingming1 = loadingming2 = false;
+            document.querySelector('.loading').classList.remove('show');
+            document.querySelector('.container').classList.remove('hide');
+        }
+    }
+    function showAllWordIsLabeled() {
+        loadingming1 = loadingming2 = false;
+        isLoading(false);
+        document.querySelector('.success-msg').classList.remove('hide');
+        document.querySelector('.container').classList.add('hide');
+        return;
     }
     function updateBoxandWordFlag(index){
         var _ =this;
@@ -109,6 +155,9 @@ window.onload=function(){
             wordspan = form.querySelector('.word');
             rightwordinput = form.elements['right_word'];
 
+            wordspan.innerHTML = imageURLs[ownMap[index]]['word'];
+            rightwordinput.value = imageURLs[ownMap[index]]['word']; //set word text default value
+
             curimg.onload = (function(index){
                 return function(event) {
                     var _ = this;
@@ -129,9 +178,10 @@ window.onload=function(){
                         _.height = curImgHeight;
                     }
                     console.log(`the ${index} img's real width in html is ${_.width}`);
+                    console.log(`the ${index} img's real height in html is ${_.height}`);
                     _imgBoxHeight = Math.max(_imgBoxHeight, _.height);
-
-                    forms[index].querySelector('.img-box').style.height = _imgBoxHeight + 'px';
+                    forms[0].querySelector('.img-box').style.height = _imgBoxHeight + 'px';
+                    forms[1].querySelector('.img-box').style.height = _imgBoxHeight + 'px';
                     showForm();
                 }
             })(index);
@@ -152,8 +202,7 @@ window.onload=function(){
                 if(index == 1) loadingming2 = false;
                 console.log(loadingming1 + ' ' + loadingming2);
                 if(!loadingming1 && !loadingming2) {
-                    document.querySelector('.loading').classList.remove('show');
-                    document.querySelector('.container').classList.remove('hide');
+                    isLoading(false);
                 }
             }else{
                 curimg.removeAttribute('width');
@@ -161,8 +210,6 @@ window.onload=function(){
 
                 curimg.src = imgURL;
                 console.log(`the ${index} img url is ${imgURL}.`);
-                wordspan.innerHTML = imageURLs[ownMap[index]]['word'];
-                rightwordinput.value = imageURLs[ownMap[index]]['word']; //set word text default value
                 form.style.visibility ='visible';
             }
         })
@@ -224,8 +271,22 @@ window.onload=function(){
                             form.elements['right_word'].value = forms[otherFormIndex].querySelector('.word').innerText;
                         }
                         if(!((isOurWordRight && isOurBoxRight) || (isOtherWordRight && isOtherBoxRight))) {
-                            forms[0].elements['right_word'].value = '';
-                            forms[1].elements['right_word'].value = '';
+
+                            if(index == 0 && otherEnterWordBox.visibility != 'hidden'){
+                                if(forms[1].elements['right_word'].value.trim() != forms[0].querySelector('.word').innerText.trim()){
+                                    forms[0].elements['right_word'].value = forms[1].elements['right_word'].value;
+                                } else {
+                                    forms[0].elements['right_word'].value = forms[1].elements['right_word'].value = '';
+                                }
+
+                            }
+                            if(index == 1 && ourEnterWordBox.visibility != 'hidden'){
+                                if(forms[0].elements['right_word'].value.trim() != forms[1].querySelector('.word').innerText.trim()){
+                                    forms[1].elements['right_word'].value = forms[0].elements['right_word'].value;
+                                } else {
+                                    forms[0].elements['right_word'].value = forms[1].elements['right_word'].value = '';
+                                }
+                            }
                             forms[0].elements['right_word'].focus();
                         }
                         enterRightWordBox.style.visibility="visible";
@@ -240,6 +301,8 @@ window.onload=function(){
         var data = {'our': {}, 'other': {}};
         var validate = true;
         forms.forEach(function(form, index) {
+            if(hasAllLabled) return;
+
             if(!validate) {
                 return;
             }
@@ -278,10 +341,6 @@ window.onload=function(){
             func(false);
         };
   }
-
-    function createXHR() {
-        return new XMLHttpRequest();
-    }
     xhr = createXHR();
 
     xhr.onprogress = function(event) {
@@ -308,15 +367,16 @@ window.onload=function(){
       if(xhr.status >= 200 && xhr.status < 300 || xhr.status == 304 ) {
         data = JSON.parse(xhr.response);
         cachedImages = data['images'];
-        // console.log(cachedImages);
+        console.log(cachedImages);
+
         // if length is 0 , All the pictures have been processed
         if(cachedImages.length == 0){
-            loadingming1 = loadingming2 = false;
-            document.querySelector('.loading').classList.remove('show');
-            document.querySelector('.success-msg').classList.remove('hide');
+            hasAllLabled = true;
+            showAllWordIsLabeled();
             return;
         }
         showNextImg(cachedImages[currentImageIndex], forms);
+
         forms.forEach(function(form, index) {
             initformEvent(form, index);
         })
@@ -325,22 +385,29 @@ window.onload=function(){
         [goNextBtn, goLastBtn].forEach(function(submitBtn, index) {
             submitBtn.onclick = function(event) {
                 var _ = this;
-                console.log(_);
-                console.log('hahahahahah');
                 event.preventDefault();
+                if(hasAllLabled || (loadingming1 == true || loadingming2 == true)) return; // if all words are labeled then exit immediately
                 // validateForm validate forms and the argument is a callback will be called if validate success
                 validateForm(forms, function(validateSuccess, formdata){
                   if(validateSuccess) {
-                    storageToDB(formdata, function(){
+                    storageToDB(formdata, function() {
+                        // console.log(`%c two_labeled : ${two_labeled}`, "color: blue; font-size: 18px;");
+                        // if(two_labeled) {
+                        //     cachedImages.splice(currentImageIndex, 1);
+                        // }
                         if(_ == goNextBtn) {
-                            currentImageIndex += 1;
+
+                            // if(!two_labeled) {
+                                currentImageIndex += 1;
+                            // }
                             console.log('currImgIndex is: ' + currentImageIndex + 'cachedImagesLength is: ' + cachedImages.length);
                             if(currentImageIndex >= cachedImages.length) {
-                                loadingming1 = loadingming2 = false;
-                                document.querySelector('.loading').classList.remove('show');
-                                document.querySelector('.container').classList.add('hide');
-                                document.querySelector('.success-msg').classList.remove('hide');
-                                window.location.reload();
+                                cachedImages =  [];
+                                currentImageIndex = 0;
+                                console.log(`%c get new images `, "color:green; font-size: 18px;");
+                                xhr.open('post', '/images', true);
+                                xhr.send(null);
+                                isLoading(true);
                                 return;
                             }
                         }　else {
@@ -373,36 +440,43 @@ window.onload=function(){
           if(typeof func != 'function') {
             throw new Error('argument must be a function');
           }
-          xhr = createXHR();
-          xhr.onreadystatechange = function(){
-            if(xhr.readyState == 4) {
-              if(xhr.status >= 200 && xhr.status < 300 || xhr.status == 304 ) {
-                  msg = JSON.parse(xhr.responseText).msg;
+          var storage_xhr = createXHR();
+          storage_xhr.onreadystatechange = function(){
+            if(storage_xhr.readyState == 4) {
+              if(storage_xhr.status >= 200 && storage_xhr.status < 300 || storage_xhr.status == 304 ) {
+                  var data = JSON.parse(storage_xhr.response || storage_xhr.responseText);
+                  console.log(data);
+                  var msg = data.msg;
+                //   var two_labeled = data.two_labeled;
                   if(msg.trim() == 'ok') {
                       //call callback
                       func();
                   }else {
-                    console.log('error for storage:' + msg);
+                     if(parseInt(data.code) == 1) {
+                         window.location.reload();
+                     }
+                    console.log(`%c error for storage: ${msg}`, "color: red");
                   }
               } else {
-                  console.log('request was unsuccessful: ' + xhr.status);
+                  console.log(`%c request was unsuccessful: ${storage_xhr.status}`, "color: green");
               }
             }
           };
-          xhr.open('post', '/storagedb', true);
+          storage_xhr.open('post', '/storagedb', true);
           console.log('data for update to db:');
           console.log(formdata);
           // xhr.send(JSON.stringify(formdata));
           // xhr.setRequestHeader("Content-Type", "application/json");
           // xhr.send(JSON.parse(JSON.stringify(formdata)));
-          xhr.send(JSON.stringify(formdata));
+          storage_xhr.send(JSON.stringify(formdata));
         }
 
-      } else {
+        } else {
           console.log('request was unsuccessful: ' + xhr.status);
       }
     }
     };
     xhr.open('post', '/images', true);
     xhr.send(null);
+    isLoading(true);
 }

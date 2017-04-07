@@ -103,8 +103,8 @@ def caculteCorrespondid(img):
                 other_id = img + '_' + str(indexj)
                 db.execute('UPDATE ourResult set correspondid = ? where id = ?', [other_id, our_id])
                 if ourword['text'] == otherword['text']:
-                    db.execute("UPDATE ourResult set box_flag = 'true',word_flag = 'true' where id = ?",[our_id])
-                    db.execute("UPDATE otherResult set box_flag = 'true',word_flag = 'true' where id = ?",[other_id])
+                    db.execute("UPDATE ourResult set box_flag = 'true', word_flag = 'true', has_labeled = 'true' where id = ?",[our_id])
+                    db.execute("UPDATE otherResult set box_flag = 'true', word_flag = 'true', has_labeled = 'true' where id = ?",[other_id])
                 break
             else:
                 indexj += 1

@@ -1,14 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h2>Login</h2>
-  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <form action="{{ url_for('login') }}" method=post>
-    <dl>
-      <dt>Username:
-      <dd><input type=text name=username>
-      <dt>Password:
-      <dd><input type=password name=password>
-      <dd><input type=submit value=Login>
-    </dl>
-  </form>
+    <form action="/login" method="post" id="userForm">
+        <div style="display:inline-block;">
+            <label for="usernmae">用户名:</label>
+            <div>
+                <input type="text" id="username" name="username"/>
+            </div>
+        </div>
+        <button type="submit">提交</button>
+    </form>
 {% endblock %}

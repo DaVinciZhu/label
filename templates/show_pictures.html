@@ -2,42 +2,49 @@
 {% block body %}
     <div class="loading show">
         <h2>
-            Loading img.....
+            Loading
+            &nbsp;
+            <span class="process-text">0%</span>
+            &nbsp;imgs.....
         </h2>
+        <div class="process-status-box">
+            <div class="process-status"></div>
+        </div>
+
     </div>
     <div class="container fix hide">
         <div class="forms-container fix">
             <div class="left">
               <form action="#" method="post" class="our-image-form">
-                <h2>Our Way</h2>
+                <h2>我们的模型</h2>
                 <div class="img-box">
                     <div class="img-cell">
                         <img src="" alt="" class="curimg">
                     </div>
                 </div>
                 <div class="raw-word-box">
-                    <label for="word">current word:</label>
+                    <label for="word">识别单词:</label>
                   <div class="word" style="font-weight:bold;"></div>
                 </div>
                 <div class="isbox ">
-                  <label for="">box is right:</label>
+                  <label for="">框对否:</label>
                   <div class="">
                     <input type="radio" name="isrightbox" value="yes" checked="checked"/> YES
                     <input type="radio" name="isrightbox" value="no"/> NO
                   </div>
                   <div class="">
-                    <label for="">word is right:</label>
+                    <label for="">单词对否:</label>
                     <div class="">
                       <input type="radio" name="isrightword" value="yes" checked="checked"/> YES
                       <input type="radio" name="isrightword" value="no"/> NO
                     </div>
                     <div class="enter-right-word" style="visibility:hidden">
-                      <label for="">right word:</label>
+                      <label for="">正确单词:</label>
                       <div class="right-word">
                         <input type="text" name="right_word" value=""/>
                       </div>
                     </div>
-                    <span style="color:red; font-size: 16px;" class="hide notice">please enter right word!!</span>
+                    <span style="color:red; font-size: 16px;" class="hide notice">请输入正确单词!!</span>
                   </div>
                 </div>
                 <div>
@@ -46,36 +53,36 @@
             </div>
             <div class="right">
               <form action="#" method="post" class="other-img-form">
-                <h2>Other Way</h2>
+                <h2>别人的模型</h2>
                 <div class="img-box">
                     <div class="img-cell">
                         <img src="" alt="" class="curimg"/>
                     </div>
                 </div>
                 <div class="raw-word-box">
-                    <label for="word">current word:</label>
+                    <label for="word">识别单词:</label>
                   <div class="word" style="font-weight:bold;"></div>
 
                 </div>
                 <div class="isbox ">
-                  <label for="">box is right:</label>
+                  <label for="">框对否:</label>
                   <div class="">
                     <input type="radio" name="isrightbox" value="yes"checked="checked"/> YES
                     <input type="radio" name="isrightbox" value="no"/> NO
                   </div>
                   <div class="">
-                    <label for="">word is right:</label>
+                    <label for="">单词对否:</label>
                     <div class="">
                       <input type="radio" name="isrightword" value="yes" checked="checked"/> YES
                       <input type="radio" name="isrightword" value="no"/> NO
                     </div>
                     <div class="enter-right-word" style="visibility:hidden">
-                      <label for="">right word:</label>
+                      <label for="">正确单词:</label>
                       <div class="right-word">
                         <input type="text" name="right_word" value=""/>
                       </div>
                     </div>
-                    <span style="color:red; font-size: 16px;" class="hide notice">please enter right word!!</span>
+                    <span style="color:red; font-size: 16px;" class="hide notice">请输入正确单词!!</span>
                   </div>
                 </div>
                 <div>
@@ -85,12 +92,14 @@
             </div>
         </div>
       <div class="button-box fix">
-          <button type="submit" name="last word" value="submit" id="goLast">Last Word </button>
-          <button type="submit" name="next word" value="submit" id="goNext">Next Word </button>
+          <button type="submit" name="last word" value="submit" id="goLast">上一个 </button>
+          <button type="submit" name="next word" value="submit" id="goNext">下一个 </button>
       </div>
     </div>
     <div class="success-msg hide">
-       <p>All worlds are labeled !!</p>
+       <p>所有单词都被标记了 !!</p>
     </div>
-
+{% endblock %}
+{% block footer %}
+<script type="text/javascript" src="static/main.js"></script>
 {% endblock %}
